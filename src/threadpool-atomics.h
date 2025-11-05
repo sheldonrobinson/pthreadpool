@@ -344,11 +344,11 @@ static inline bool pthreadpool_compare_exchange_sequentially_consistent_int32_t(
                                                memory_order_seq_cst);
 }
 
-static inline void pthreadpool_fence_acquire() {
+static inline void pthreadpool_fence_acquire(void) {
   atomic_thread_fence(memory_order_acquire);
 }
 
-static inline void pthreadpool_fence_release() {
+static inline void pthreadpool_fence_release(void) {
   atomic_thread_fence(memory_order_release);
 }
 

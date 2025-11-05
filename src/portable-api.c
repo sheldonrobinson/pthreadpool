@@ -33,7 +33,7 @@
 #define PTHREADPOOL_DEFAULT_FASTEST_TO_SLOWEST_RATIO 2
 #define PTHREADPOOL_MAX_FASTEST_TO_SLOWEST_RATIO 4
 
-static size_t get_fastest_to_slowest_ratio() {
+static size_t get_fastest_to_slowest_ratio(void) {
 #if PTHREADPOOL_USE_CPUINFO
   // If we are not the fastest core, assume that we are at most 4x slower
   // than the fastest core.

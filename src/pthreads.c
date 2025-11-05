@@ -565,7 +565,7 @@ static pthreadpool_thread_return_t thread_main(void* arg) {
   return 0;
 }
 
-static size_t get_num_cpus() {
+static size_t get_num_cpus(void) {
 #if PTHREADPOOL_USE_CPUINFO
   return cpuinfo_get_processors_count();
 #elif defined(_SC_NPROCESSORS_ONLN)
