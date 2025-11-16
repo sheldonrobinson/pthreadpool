@@ -56,6 +56,7 @@
 typedef pthread_t pthreadpool_thread_t;
 typedef pthread_mutex_t pthreadpool_mutex_t;
 typedef pthread_cond_t pthreadpool_cond_t;
+typedef void* pthreadpool_thread_return_t;
 static inline void pthreadpool_mutex_init(pthreadpool_mutex_t* mutex) {
   pthread_mutex_init(mutex, NULL);
 }
@@ -84,18 +85,20 @@ static inline void pthreadpool_cond_signal(pthreadpool_cond_t* cond) {
 static inline void pthreadpool_cond_broadcast(pthreadpool_cond_t* cond) {
   pthread_cond_broadcast(cond);
 }
-static inline void pthreadpool_thread_create(pthreadpool_thread_t* thread,
-                                             void*(fun)(void*), void* arg) {
+static inline void pthreadpool_thread_create(
+    pthreadpool_thread_t* thread, pthreadpool_thread_return_t(fun)(void*),
+    void* arg) {
   pthread_create(thread, NULL, fun, arg);
 }
-static inline void pthreadpool_thread_join(pthreadpool_thread_t thread,
-                                           void* return_value) {
-  pthread_join(thread, (void**)return_value);
+static inline void pthreadpool_thread_join(
+    pthreadpool_thread_t thread, pthreadpool_thread_return_t* return_value) {
+  pthread_join(thread, return_value);
 }
 #else
 typedef thrd_t pthreadpool_thread_t;
 typedef mtx_t pthreadpool_mutex_t;
 typedef cnd_t pthreadpool_cond_t;
+typedef int pthreadpool_thread_return_t;
 static inline void pthreadpool_mutex_init(pthreadpool_mutex_t* mutex) {
   mtx_init(mutex, mtx_plain);
 }
@@ -124,12 +127,13 @@ static inline void pthreadpool_cond_signal(pthreadpool_cond_t* cond) {
 static inline void pthreadpool_cond_broadcast(pthreadpool_cond_t* cond) {
   cnd_broadcast(cond);
 }
-static inline void pthreadpool_thread_create(pthreadpool_thread_t* thread,
-                                             void*(fun)(void*), void* arg) {
-  thrd_create(thread, fun, arg);
+static inline void pthreadpool_thread_create(
+    pthreadpool_thread_t* thread, pthreadpool_thread_return_t(fun)(void*),
+    void* arg) {
+  thrd_create(thread, (thrd_start_t)fun, arg);
 }
-static inline void pthreadpool_thread_join(pthreadpool_thread_t thread,
-                                           void* return_value) {
+static inline void pthreadpool_thread_join(
+    pthreadpool_thread_t thread, pthreadpool_thread_return_t* return_value) {
   thrd_join(thread, return_value);
 }
 #endif  // PTHREADPOOL_USE_PTHREADS
@@ -340,11 +344,11 @@ static inline bool pthreadpool_compare_exchange_sequentially_consistent_int32_t(
                                                memory_order_seq_cst);
 }
 
-static inline void pthreadpool_fence_acquire() {
+static inline void pthreadpool_fence_acquire(void) {
   atomic_thread_fence(memory_order_acquire);
 }
 
-static inline void pthreadpool_fence_release() {
+static inline void pthreadpool_fence_release(void) {
   atomic_thread_fence(memory_order_release);
 }
 
