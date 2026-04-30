@@ -2,13 +2,6 @@ workspace(name = "pthreadpool")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-# Bazel rule definitions
-http_archive(
-    name = "rules_cc",
-    strip_prefix = "rules_cc-main",
-    urls = ["https://github.com/bazelbuild/rules_cc/archive/master.zip"],
-)
-
 # LINT.IfChange(googletest)
 # Google Test framework, used by most unit-tests.
 http_archive(
